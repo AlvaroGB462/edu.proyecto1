@@ -5,7 +5,7 @@ public class usuarioDto {
 	int id_usuario;
 	String nombre;
     String apellidos;
-    String telefono;
+    int telefono;
     
     
     public int getId_usuario() {
@@ -26,15 +26,15 @@ public class usuarioDto {
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
 	}
-	public String getTelefono() {
+	public int getTelefono() {
 		return telefono;
 	}
-	public void setTelefono(String telefono) {
+	public void setTelefono(int telefono) {
 		this.telefono = telefono;
 	}
 	
 	
-	public usuarioDto(int id_usuario, String nombre, String apellidos, String telefono) {
+	public usuarioDto(int id_usuario, String nombre, String apellidos, int telefono) {
 		super();
 		this.id_usuario = id_usuario;
 		this.nombre = nombre;
@@ -42,5 +42,8 @@ public class usuarioDto {
 		this.telefono = telefono;
 	}
 
+	public usuarioDto() {
+		
+	}
 	
 }

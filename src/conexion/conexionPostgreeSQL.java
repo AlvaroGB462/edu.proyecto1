@@ -1,10 +1,17 @@
 package conexion;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
+
+import controladores.inicio;
+import dtos.usuarioDto;
 
 public class conexionPostgreeSQL {
 
@@ -26,43 +33,41 @@ public class conexionPostgreeSQL {
         return conexion;
     }
 
-    public void mostrarDatosDeTabla(String nombreTabla) {
-       
-        String consultaSQL = "SELECT * FROM muc.\"" + nombreTabla + "\"";
+    
+    public void cargarDatosEnFichero() {
+        String consultaSQL = "SELECT * FROM muc.\"usuario\"";
         try (Connection conexion = conectar(); 
              Statement statement = conexion.createStatement();  
-             ResultSet resultado = statement.executeQuery(consultaSQL)) {
-
-            
-            int columnCount = resultado.getMetaData().getColumnCount();
-            StringBuilder header = new StringBuilder("| ");
-            for (int i = 1; i <= columnCount; i++) {
-                header.append(resultado.getMetaData().getColumnName(i)).append(" | ");
-            }
-            System.out.println(header);
-            System.out.println("-".repeat(header.length()));
+             ResultSet resultado = statement.executeQuery(consultaSQL);
+             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(inicio.RUTA_FICHERO)))) {
             
             while (resultado.next()) {
-                StringBuilder row = new StringBuilder("| ");
-                for (int i = 1; i <= columnCount; i++) {
-                    row.append(resultado.getString(i)).append(" | ");
-                }
-                System.out.println(row);
+                
+                int id = resultado.getInt("id_usuario");
+                String nombre = resultado.getString("nombre");
+                String apellidos = resultado.getString("apellido");
+                int telefono = resultado.getInt("telefono");
+                
+                
+                out.println(id + "," + nombre + "," + apellidos + "," + telefono);
             }
-
-        } catch (SQLException e) {
-            System.out.println("Error al obtener los datos: " + e.getMessage());
+            System.out.println("Datos cargados en el fichero correctamente.");
+        } catch (SQLException | IOException e) {
+            System.out.println("Error al cargar los datos en el fichero: " + e.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        conexionPostgreeSQL mostrarDatos = new conexionPostgreeSQL();
-        
-        System.out.print("Ingrese el nombre de la tabla que desea mostrar: ");
-        String nombreTabla = scanner.nextLine();
-        
-        mostrarDatos.mostrarDatosDeTabla(nombreTabla);
-        scanner.close();
+    
+    public void insertarUsuarioEnDB(usuarioDto usuario) {
+        String consultaSQL = String.format(
+                "INSERT INTO muc.\"usuario\" (id_usuario, nombre, apellido, telefono) VALUES (%d, '%s', '%s', %d)",
+                usuario.getId_usuario(), usuario.getNombre(), usuario.getApellidos(), usuario.getTelefono());
+        try (Connection conexion = conectar();
+             Statement statement = conexion.createStatement()) {
+            statement.executeUpdate(consultaSQL);
+            System.out.println("Usuario insertado correctamente en la base de datos.");
+        } catch (SQLException e) {
+            System.out.println("Error al insertar el usuario: " + e.getMessage());
+        }
     }
 }
