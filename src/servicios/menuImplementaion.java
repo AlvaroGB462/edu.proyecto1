@@ -37,5 +37,21 @@ public class menuImplementaion implements menuInterfaz {
 
 		return opcion;
 	}
+	
+	public int menuClub() {
+
+		int opcion;
+
+		System.out.println("------------------------------");
+		System.out.println("|0. Volver al menu principal |");
+		System.out.println("|1. Añadir club              |");
+		System.out.println("|2. Modificar club           |");
+		System.out.println("|3. Borrar club              |");
+		System.out.println("------------------------------");
+
+		opcion = sc.nextInt();
+
+		return opcion;
+	}
 
 }
