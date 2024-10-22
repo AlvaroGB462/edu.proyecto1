@@ -6,8 +6,6 @@ import java.util.List;
 import conexion.conexionPostgreeSQL;
 import dtos.clubDto;
 import dtos.usuarioDto;
-import servicios.ficheroImplementacion;
-import servicios.ficheroInterfaz;
 import servicios.menuImplementaion;
 import servicios.menuInterfaz;
 import servicios.operativaImplementacion;
@@ -27,16 +25,11 @@ public class inicio {
 
 		menuInterfaz mi = new menuImplementaion();
 		operativaInterfaz oi = new operativaImplementacion();
-		ficheroInterfaz fi = new ficheroImplementacion();
 
 		conexionPostgreeSQL conexionDB = new conexionPostgreeSQL();
 
-		conexionDB.cargarDatosEnFichero();
-		conexionDB.cargarDatosEnFicheroClubs();
-		
-		fi.cargarUsuariosDesdeFichero();
-		fi.cargarClubsDesdeFichero();
-		
+		conexionDB.cargarUsuariosEnLista();
+		conexionDB.cargarClubsEnLista();	
 
 		boolean cerrarMenu = false;
 		int opcionSeleccinada;
@@ -57,6 +50,18 @@ public class inicio {
 						break;
 					case 1:
 						oi.anyadirUsuario();
+						for (usuarioDto usuario : listaUsuarios) {
+							System.out.println(usuario.getNombre() + " " + usuario.getApellidos());
+						}
+						break;
+					case 2:
+						oi.modificarUsuario();
+						for (usuarioDto usuario : listaUsuarios) {
+							System.out.println(usuario.getNombre() + " " + usuario.getApellidos());
+						}
+						break;
+					case 3:
+						oi.borrarUsuario();
 						for (usuarioDto usuario : listaUsuarios) {
 							System.out.println(usuario.getNombre() + " " + usuario.getApellidos());
 						}
@@ -83,6 +88,21 @@ public class inicio {
 									+ buscar.getFecha_fundacion());
 						}
 						break;
+					case 2:
+						oi.modificarClub();
+						for (clubDto buscar : listaClubs) {
+
+							System.out.println(buscar.getId_club() + ", " + buscar.getNombre_club() + ", "
+									+ buscar.getFecha_fundacion());
+						}
+						break;
+					case 3:
+						oi.borrarClub();
+						for (clubDto buscar : listaClubs) {
+
+							System.out.println(buscar.getId_club() + ", " + buscar.getNombre_club() + ", "
+									+ buscar.getFecha_fundacion());
+						}
 
 					default:
 						System.out.println("Opción seleccionada no válida");
